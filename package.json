@@ -1,0 +1,21 @@
+{
+  "name": "bruhbot",
+  "version": "1.0.0",
+  "description": "![](https://cdn.discordapp.com/attachments/733930634120134656/837924324630986772/unknown.png)",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "discord.js": "^12.5.3",
+    "sharp": "^0.28.3",
+    "xmlhttprequest": "^1.8.0"
+  }
+}
