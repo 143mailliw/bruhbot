@@ -11,7 +11,7 @@ $ npm install
 $ npm start
 ```
 
-To use admin commands, you need to give yourself a role with the `admin` permission.
+To use admin commands, you need to give yourself a role with the name `Admin`.
 
 Example config (put in config.json):
 ```
