@@ -1,5 +1,6 @@
-// Create a discord bot using discord.js
+// Create a discord bot using dscord.js (version 12)
 // and respond to commands starting with "+"
+// Only use the discord.js version 12
 // Commands: 
 // +hello - say hello
 // +help - list commands
@@ -11,7 +12,17 @@
 // +weather <location> - get the weather
 // +wiki <search> - search wikipedia
 // +urban <search> - search urban dictionary
+// +mute <user> - mute a user (admins only)
+// +unmute <user> - unmute a user (admins only)
+// +kick <user> - kick a user (admins only)
+// +ban <user> - ban a user (admins only)
+// +unban <user> - unban a user (admins only)
 // +prune <count> - delete messages (admins only)
+// +shutdown - shutdown the bot (admins only)
+// +status - get bot status
+// +invite - get bot invite link
+// +server - get server info
+// +userinfo <user> - get user info
 // +eval <code> - evaluate some code
 // +about - about the bot
 // +flipimage - flip an attached image
@@ -31,7 +42,7 @@ const commands = {
   // help command
   help: function(message) {
     // send a list of non-admin commands in an embed
-    // skip admin commands that end with "admins only"
+    // skip admin commands that end with "(admins only)"
     var embed = new Discord.MessageEmbed();
     embed.setColor(0xFF0000);
     embed.setTitle('Help');
@@ -48,6 +59,10 @@ const commands = {
     embed.addField('+eval <code>', 'Evaluate some code', true);
     embed.addField('+about', 'About the bot', true);
     embed.addField('+flipimage', 'Flip an attached image', true);
+    embed.addField('+status', 'Get bot status', true);
+    embed.addField('+invite', 'Get bot invite link', true);
+    embed.addField('+server', 'Get server info', true);
+    embed.addField('+userinfo <user>', 'Get user info', true);
     
     message.channel.send({embed});
   },
@@ -56,11 +71,19 @@ const commands = {
     // make sure the message author is an admin
     if (message.member.roles.cache.some(role => role.name === 'Admin')) {
       // send a list of admin commands in an embed
+      // only include commands that end with "admins only"
       var embed = new Discord.MessageEmbed();
       embed.setColor(0xFF0000);
       embed.setTitle('Admin Commands');
       embed.setDescription('List of admin commands:');
       embed.addField('+prune <count>', 'Delete messages', true);
+      embed.addField('+mute <user>', 'Mute a user', true);
+      embed.addField('+unmute <user>', 'Unmute a user', true);
+      embed.addField('+kick <user>', 'Kick a user', true);
+      embed.addField('+ban <user>', 'Ban a user', true);
+      embed.addField('+unban <user>', 'Unban a user', true);
+      embed.addField('+shutdown', 'Shutdown the bot', true);
+
       message.channel.send({embed});
     } else {
       // send an error message
@@ -196,6 +219,183 @@ const commands = {
     }).catch(function(err) {
       message.channel.send('Error: ' + err);
     });
+  },
+  // mute command
+  mute: function(message) {
+    // prevent non-admins from muting
+    if (message.member.roles.cache.some(role => role.name === 'Admin')) {
+      // get the user id
+      var userId = message.mentions.users.first().id;
+      // get the user
+      var user = message.guild.member(userId);
+      // get the role
+      var role = message.guild.roles.cache.find(role => role.name === 'Muted');
+      // abort if the role is not found
+      if (role === undefined) {
+        message.channel.send('The Muted role is not found!');
+        return;
+      }
+      // add the role to the user
+      user.roles.add(role);
+      // send confirmation
+      message.channel.send('Muted ' + user.user.username + '!');
+    } else {
+      // send confirmation
+      message.channel.send('You are not an admin!');
+    }
+  },
+  // unmute command
+  unmute: function(message) {
+    // prevent non-admins from muting
+    if (message.member.roles.cache.some(role => role.name === 'Admin')) {
+
+      // get the user id
+      var userId = message.mentions.users.first().id;
+      // get the user
+      var user = message.guild.member(userId);
+      // get the role
+      var role = message.guild.roles.cache.find(role => role.name === 'Muted');
+      // abort if the role is not found
+      if (role === undefined) {
+        message.channel.send('The Muted role is not found!');
+        return;
+      }
+      // remove the role from the user
+      user.roles.remove(role);
+      // send confirmation
+      message.channel.send('Unmuted ' + user.user.username + '!');
+    } else {
+      // send confirmation
+      message.channel.send('You are not an admin!');
+    }
+  },
+  // kick command
+  kick: function(message) {
+    // prevent non-admins from kicking
+    if (message.member.roles.cache.some(role => role.name === 'Admin')) {
+      // get the user id
+      var userId = message.mentions.users.first().id;
+      // get the user
+      var user = message.guild.member(userId);
+      // kick the user
+      user.kick();
+      // send confirmation
+      message.channel.send('Kicked ' + user.user.username + '!');
+    } else {
+      // send confirmation
+      message.channel.send('You are not an admin!');
+    }
+  },
+  // ban command
+  ban: function(message) {
+    // prevent non-admins from banning
+    if (message.member.roles.cache.some(role => role.name === 'Admin')) {
+      // get the user id
+      var userId = message.mentions.users.first().id;
+      // get the user
+      var user = message.guild.member(userId);
+      // ban the user
+      user.ban();
+      // send confirmation
+      message.channel.send('Banned ' + user.user.username + '!');
+    } else {
+      // send confirmation
+      message.channel.send('You are not an admin!');
+    }
+  },
+  // unban command
+  unban: function(message) {
+    // prevent non-admins from unbaning
+    if (message.member.roles.cache.some(role => role.name === 'Admin')) {
+      // get the user id
+      var userId = message.mentions.users.first().id;
+      // get the user
+      var user = message.guild.member(userId);
+      // unban the user
+      user.unban();
+      // send confirmation
+      message.channel.send('Unbanned ' + user.user.username + '!');
+    } else {
+      // send confirmation
+      message.channel.send('You are not an admin!');
+    }
+  },
+  // shutdown command
+  shutdown: function(message) {
+    // prevent non-admins from shutting down
+    if (message.member.roles.cache.some(role => role.name === 'Admin')) {
+      // send confirmation
+      message.channel.send('Shutting down...');
+      // shutdown the bot
+      process.exit();
+    } else {
+      // send confirmation
+      message.channel.send('You are not an admin!');
+    }
+  },
+  // status command
+  status: function(message) {
+    // get the status
+    var status = require('./status.js');
+    // get the status
+    var status = status.getStatus();
+    // send embed
+    var embed = new Discord.MessageEmbed();
+    embed.setColor(0x00ff00);
+    embed.setTitle('Status');
+    description = 'The bot is currently **running**.';
+    // add details about the process
+    if (status.pid) {
+      description += '\nThe process is running with pid ' + status.pid + '.';
+    }
+    // add details about the uptime
+    if (status.uptime) {
+      description += '\nThe bot has been running for ' + Math.floor(status.uptime / 60) + ' minutes.';
+    }
+    // add details about the memory
+    if (status.memory) {
+      description += '\nThe bot has ' + (status.memory.used / (1024 * 1024)).toFixed(2) + ' MB of memory used.';
+    }
+    // add the status description
+    embed.setDescription(description);
+    embed.setFooter('Powered by Discord.js');
+
+    message.channel.send(embed);
+  },
+  // invite command
+  invite: function(message) {
+    // get the invite
+    var invite = require('./invite.js');
+    // get the invite
+    var invite = invite.getInvite();
+    // send the invite
+    message.channel.send(invite);
+  },
+  // server command
+  server: function(message) {
+    // get the server
+    var server = require('./server.js');
+    // get the server
+    var server = server.getServer(message.guild);
+    // send the server
+    message.channel.send(server);
+  },
+  // userinfo command
+  userinfo: function(message) {
+    // get the user
+    var user = require('./users.js');
+    // abort if no user was provided
+    if (!message.mentions.users.first()) {
+      // send error
+      message.channel.send('Please mention a user!');
+      return;
+    }
+    // get the guild member
+    var member = message.guild.members.cache.find(member => member.user.id === message.mentions.users.first().id);
+    // get the user
+    var user = user.getUser(message.mentions.users.first(), member);
+    // send the user
+    message.channel.send(user);
   }
 };
 

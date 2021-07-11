@@ -12,12 +12,14 @@ $ npm start
 ```
 
 To use admin commands, you need to give yourself a role with the name `Admin`.
+To use the mute command, you need to make a role with the name `Muted`.
 
 Example config (put in config.json):
 ```
 {
   "token": "<your bot's token>",
   "prefix": "+",
-  "weatherApiKey": "<openweathermap api key>"
+  "weatherApiKey": "<openweathermap api key>",
+  "invite": "<your invite link>",
 }
 ```
